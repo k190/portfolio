@@ -11,6 +11,7 @@ import {
   Select,
   Textarea,
   VStack,
+  useToast
 } from "@chakra-ui/react";
 import * as Yup from 'yup';
 import FullScreenSection from "./FullScreenSection";
@@ -45,7 +46,7 @@ const LandingSection = () => {
     if(response.type=== "success"){
       toast({
          title:"Form submitted successfully!",
-         description: 'Thank you, ${formik.values.firstName}!',
+         description: `Thank you, ${formik.values.firstName}`,
          status: "success",
          duration: 5000,
          isClosable: true,
@@ -74,7 +75,7 @@ const LandingSection = () => {
           Contact me
         </Heading>
         <Box p={6} rounded="md" w="100%">
-          <form onsubmit={formik.handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
               <FormControl isInvalid={formik.touched.firstName && formik.errors.firstName}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
