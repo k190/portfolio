@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -33,13 +33,32 @@ const socials = [
 ];
 
 const Header = () => {
-  const handleClick = (anchor) => () => {
-    const id = `${anchor}-section`;
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      const visible = prevScrollPos > currentScrollPos;
+
+      setVisible(visible);
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollPos]);
+  const handleClick = (section) => (event) => {
+    event.preventDefault();
+    const target = document.getElementById(section);
+    if (target) {
+      window.scrollTo({
+        top: target.offsetTop,
         behavior: "smooth",
-        block: "start",
       });
     }
   };
@@ -47,7 +66,7 @@ const Header = () => {
   return (
     <Box
       position="fixed"
-      top={0}
+      top={visible ? 0 : -200}
       left={0}
       right={0}
       translateY={0}
@@ -55,6 +74,7 @@ const Header = () => {
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      ref={headerRef}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -69,7 +89,7 @@ const Header = () => {
                 <a 
                   key={index}
                   href={social.url}
-                  target="-blank"
+                  target="_blank"
                   rel="noopener noreferrer"
                   
                   >
@@ -77,7 +97,7 @@ const Header = () => {
                   </a>
               ))}
             </HStack>
-            {/* Add social media links based on the `socials` data */}
+            {/* Add social media links based on the socials data */}
           </nav>
           <nav>
             <HStack spacing={8}>
@@ -95,4 +115,5 @@ const Header = () => {
     </Box>
   );
 };
+
 export default Header;
